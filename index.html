@@ -1397,14 +1397,15 @@ async function handleAuth() {
   }
 
   await sb.auth.signInWithOAuth({
-  provider: "google",
-  options: {
-    redirectTo: "https://netzach353-collab.github.io/drop-products/",
-    queryParams: {
-      prompt: "select_account"
+    provider: "google",
+    options: {
+      redirectTo: "https://netzach353-collab.github.io/drop-products/",
+      queryParams: {
+        prompt: "select_account"
+      }
     }
-  }
-});
+  });
+}
 
 function updateAuthIcon(user) {
   const authIconText = document.getElementById("authIconText");
