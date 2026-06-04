@@ -1537,11 +1537,11 @@ async function updateProductStock(productId, currentStock){
     .update({ stock: stockNumber })
     .eq("id", productId);
 
-  if (error) {
-    alert("שגיאה בעדכון הכמות");
-    console.error(error);
-    return;
-  }
+ if (error) {
+  alert("שגיאה בעדכון הכמות: " + error.message);
+  console.error(error);
+  return;
+}
 
   showToast("הכמות עודכנה בהצלחה");
   await loadProductsFromSupabase();
