@@ -1336,24 +1336,11 @@ function updateCartAnimation(){
 
   if (cart.length > 0) {
     cartBtn.classList.add("pulse");
-    startCartReminderTimer();
+    
   } else {
     cartBtn.classList.remove("pulse");
     clearTimeout(cartReminderTimer);
   }
-}
-
-function startCartReminderTimer(){
-  if (sessionStorage.getItem("cartReminderShown") === "true") return;
-
-  clearTimeout(cartReminderTimer);
-
-  cartReminderTimer = setTimeout(() => {
-    if (cart.length > 0) {
-      document.getElementById("cartReminder").classList.add("show");
-      sessionStorage.setItem("cartReminderShown", "true");
-    }
-  }, 120000);
 }
 
 function closeCartReminder(){
@@ -1799,6 +1786,12 @@ function addToCart(productId){
   saveCart();
   updateCartUI();
   showToast("המוצר נוסף לסל");
+  
+  if (!sessionStorage.getItem("cartReminderShown")) {
+  document.getElementById("cartReminder").classList.add("show");
+  sessionStorage.setItem("cartReminderShown", "true");
+}
+  
 }
 
 function updateCartUI(){
