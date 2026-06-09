@@ -18,6 +18,15 @@ body {
   color: #111;
 }
 
+.categories,
+.categories * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+
 /* סרגל עליון */
 .topbar {
   height: 64px;
@@ -1074,6 +1083,44 @@ position: relative;
   background:#fee2e2;
   color:#991b1b;
 }
+
+.cart-total{
+  background:#111827;
+  color:white;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.cart-checkout-box{
+  margin-top:20px;
+  padding-top:15px;
+  border-top:1px solid rgba(255,255,255,.15);
+}
+
+.checkout-btn{
+  width:100%;
+  border:none;
+  background:#2563eb;
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(37,99,235,.35);
+}
+
+.checkout-btn:hover{
+  background:#1d4ed8;
+}
+
+.checkout-btn:active{
+  transform:scale(.97);
+}
 </style>
 </head>
 
@@ -1103,6 +1150,15 @@ position: relative;
 <div id="cartItems" class="cart-list">
   <p class="cart-empty">הסל ריק</p>
 </div>
+
+<div id="cartCheckout" class="cart-checkout-box" style="display:none;">
+  <div id="cartTotal" class="cart-total"></div>
+
+  <button class="checkout-btn" onclick="goToCheckout()">
+    המשך לתשלום
+  </button>
+</div>
+
 <hr style="border:0; background:rgba(255,255,255,0.165); height:1px; margin:18px 0;">
 
 </div>
@@ -1470,6 +1526,7 @@ async function checkUser() {
   adminAddBtn.style.display = currentIsAdmin ? "block" : "none";
 
   await loadProductsFromSupabase(); // מרענן את המוצרים אחרי בדיקת הרשאה
+  updateCartUI();
 }
 
 checkUser();
@@ -1832,8 +1889,11 @@ function addToCart(productId){
 function updateCartUI(){
   const cartCount = document.getElementById("cartCount");
   const cartItems = document.getElementById("cartItems");
-
+const cartCheckout = document.getElementById("cartCheckout");
+const cartTotal = document.getElementById("cartTotal");
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (cartCheckout) cartCheckout.style.display = "none";
 
   if (cartCount) {
     cartCount.textContent = totalItems;
@@ -1868,6 +1928,11 @@ ${currentIsAdmin ? `<small>מקסימום: ${item.stock}</small>` : ""}
       </div>
     </div>
   `).join("");
+
+  if (cartCheckout && cartTotal) {
+  cartCheckout.style.display = "block";
+  cartTotal.textContent = `סה״כ לתשלום: ${formatPrice(getCartTotal())}`;
+}
   updateCartAnimation();
 }
 
@@ -1912,6 +1977,29 @@ function openCart(){
   openSidebar();
   updateCartUI();
   sessionStorage.setItem("cartReminderShown", "true");
+}
+
+function getCartTotal(){
+  return cart.reduce((sum, item) => {
+    return sum + (Number(item.price) * Number(item.quantity));
+  }, 0);
+}
+
+function goToCheckout(){
+  if (cart.length === 0) {
+    showToast("הסל ריק");
+    return;
+  }
+
+  const checkoutData = {
+    items: cart,
+    totalItems: cart.reduce((sum, item) => sum + item.quantity, 0),
+    totalPrice: getCartTotal()
+  };
+
+  localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+
+  window.location.href = "checkout.html";
 }
 
 loadProductsFromSupabase();
