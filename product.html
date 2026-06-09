@@ -263,13 +263,6 @@ body {
   margin-bottom:6px;
 }
 
-.product-subtitle{
-  font-size:15px;
-  color:#6b7280;
-  margin-top:-6px;
-  margin-bottom:16px;
-  line-height:1.5;
-}
 
 .save-cart-btn{
   color:rgb(0, 0, 0);
@@ -297,6 +290,19 @@ body {
 
 .delivery-box span{
   font-size:18px;
+}
+
+.product-info,
+.product-info * {
+  min-width: 0;
+}
+
+.product-name,
+.description,
+.delivery-box {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
 </style>
 </head>
@@ -398,11 +404,6 @@ currentImageIndex = 0;
   ${product.name}
 </h1>
 
-${product.subtitle ? `
-  <div class="product-subtitle">
-    ${product.subtitle}
-  </div>
-` : ""}
 
       <div class="price-row">
         <span class="price">${formatPrice(product.sale_price)}</span>
