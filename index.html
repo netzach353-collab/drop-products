@@ -709,59 +709,36 @@ html {
 }
 
 .payment-icons{
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
-}
-
-.payment-icons span{
-  background:rgba(255,255,255,.08);
-  padding:8px 14px;
-  border-radius:10px;
-}
-
-.footer-copy{
-  text-align:center;
-  border-top:1px solid rgba(255,255,255,.12);
-  padding-top:18px;
-  color:#9ca3af;
-  font-size:14px;
-}
-
-.payment-icons{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:15px;
-  max-width:650px;
-  margin:auto;
+  grid-template-columns:repeat(4, 80px);
+  gap:12px;
+  justify-content:center;
   align-items:center;
+  margin:0 auto 25px;
+  padding-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,.12);
 }
 
-.payment-icons img{
-  width:100%;
-  max-height:50px;
+.payment-icons img,
+.isracard-icon{
+  width:80px;
+  height:50px;
+  background:rgba(255,255,255,.08);
+  padding:8px;
+  border-radius:12px;
   object-fit:contain;
   filter:brightness(0) invert(1);
-  opacity:.9;
-  transition:.2s;
 }
 
-  .payment-icons{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:12px;
-}
-
-.payment-icons img{
-  background:rgba(255,255,255,.08);
-  padding:8px 8px;
-  border-radius:12px;
-  width:100%;
-  height:50px;
-  object-fit:contain;
-  margin-bottom: 10px;
-  
+.isracard-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:11px;
+  color:white;
+  letter-spacing:.5px;
+  filter:none;
 }
 
 
@@ -1179,6 +1156,31 @@ position: relative;
   color: #16a34a;
   font-size: 16px;
 }
+  
+ 
+
+
+  .isracard-icon {
+  background:rgba(255,255,255,.08);
+  border-radius:12px;
+  width:100%;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:11px;
+  color:white;
+  letter-spacing:.5px;
+  transition:.2s;
+    
+    padding: 10px 5px;
+   
+}
+
+.isracard-icon:hover{
+  background:rgba(255,255,255,.15);
+}
 </style>
 </head>
 
@@ -1274,9 +1276,9 @@ position: relative;
 <div class="categories" id="categories">
 
   <div class="category" onclick="selectCategory()">
-    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300">
-    <span>הכל</span>
-  </div>
+  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300">
+  <span>הכל</span>
+</div>
 
   <div class="category" onclick="selectCategory('computers')">
     <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300">
@@ -1293,10 +1295,10 @@ position: relative;
     <span>גיימינג</span>
   </div>
 
-  <div class="category" onclick="selectCategory('appliances')">
-    <img src="https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=300">
-    <span>מוצרי חשמל</span>
-  </div>
+ <div class="category" onclick="selectCategory('appliances')">
+  <img src="https://images.unsplash.com/photo-1583241475880-083f84372725?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+  <span>למטבח</span>
+</div>
 
   <div class="category" onclick="selectCategory('perfumes')">
     <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=300">
@@ -1314,9 +1316,9 @@ position: relative;
   </div>
 
   <div class="category" onclick="selectCategory('headphones')">
-    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300">
-    <span>אוזניות</span>
-  </div>
+  <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+  <span>אוזניות</span>
+</div>
 
   <div class="category" onclick="selectCategory('gadgets')">
     <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300">
@@ -1433,13 +1435,11 @@ position: relative;
 
   <img src="https://cdn.simpleicons.org/mastercard" alt="Mastercard">
 
-  <img src="https://cdn.simpleicons.org/paypal" alt="PayPal">
-
   <img src="https://cdn.simpleicons.org/googlepay" alt="Google Pay">
 
-  <img src="https://upload.wikimedia.org/wikipedia/he/thumb/7/70/Isracard_logo.svg/512px-Isracard_logo.svg.png"
-       alt="ישראכרט">
-
+   <div class="isracard-icon">
+  ישראכרט
+</div>
 </div>
 
   <div class="footer-copy">
