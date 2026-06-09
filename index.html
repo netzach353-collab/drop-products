@@ -1014,7 +1014,7 @@ position: relative;
 
 .cart-reminder{
   position:fixed;
-  bottom:50%;
+  bottom:80px;
   left:50%;
   transform:translateX(-50%);
   background:white;
@@ -1103,9 +1103,8 @@ position: relative;
 <div id="cartItems" class="cart-list">
   <p class="cart-empty">הסל ריק</p>
 </div>
-<hr id="cartDivider"
-style="display:none;border:0;background:rgba(255,255,255,0.165);height:1px;margin:18px 0;">
-  
+<hr style="border:0; background:rgba(255,255,255,0.165); height:1px; margin:18px 0;">
+
 </div>
 <a href="#" onclick="openAbout()">מי אנחנו..?</a>
 <a href="contact.html">צור קשר</a>
@@ -1831,7 +1830,6 @@ function addToCart(productId){
 }
 
 function updateCartUI(){
-  const cartDivider = document.getElementById("cartDivider");
   const cartCount = document.getElementById("cartCount");
   const cartItems = document.getElementById("cartItems");
 
@@ -1844,15 +1842,11 @@ function updateCartUI(){
   if (!cartItems) return;
 
 if (cart.length === 0) {
-  if (cartDivider) cartDivider.style.display = "none";
   cartItems.innerHTML = `<p class="cart-empty">הסל ריק</p>`;
   updateCartAnimation();
   return;
 }
-
-if (cartDivider) cartDivider.style.display = "block";
-
- cartItems.innerHTML = cart.map(item => `
+  cartItems.innerHTML = cart.map(item => `
     <div class="cart-item">
       <img src="${item.image}" alt="${item.name}">
 
