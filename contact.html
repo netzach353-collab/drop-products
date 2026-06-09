@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -259,7 +258,9 @@ document
       document.getElementById("email").value.trim();
 
     const reason =
-      document.getElementById("reason").value;
+      document.getElementById("reason")
+       .options[document.getElementById("reason").selectedIndex]
+       .text;
 
     const message =
       document.getElementById("message").value.trim();
