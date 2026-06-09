@@ -276,7 +276,8 @@ body {
   padding: 0 14px;
   margin-top: auto;
   margin-bottom: 10px;
-  text-align: center
+  text-align: center;
+
 }
 
 .buy-btn {
@@ -299,6 +300,7 @@ body {
   font-weight: 900;
   color: #16a34a;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .buy-btn {
@@ -352,12 +354,7 @@ body {
   padding: 20px;
 }
   
-  .old-price {
-  text-decoration: line-through;
-  color: #888;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
+
  
 .user-btn {
   width: 42px;
@@ -1121,6 +1118,65 @@ position: relative;
 .checkout-btn:active{
   transform:scale(.97);
 }
+
+.product,
+.product * {
+  min-width: 0;
+}
+
+.product-title,
+.product-subtitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.product-title {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  line-height: 21px;
+  max-height: 42px;
+}
+
+.product-subtitle {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  line-height: 20px;
+  max-height: 40px;
+}
+
+.product-brand {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price-box {
+  padding: 0 14px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.price {
+  padding: 0;
+  margin: 0;
+  font-weight: 900;
+  color: #16a34a;
+  font-size: 16px;
+}
 </style>
 </head>
 
@@ -1583,9 +1639,15 @@ productCard.onclick = () => goToProduct(product.id);
     ${product.subtitle || ""}
   </div>
 
+ <div class="price-box">
+  ${product.oldPrice ? `
+    <div class="old-price">${formatPrice(product.oldPrice)}</div>
+  ` : ""}
+
   <div class="price">
     ${formatPrice(product.price)}
   </div>
+</div>
 
 ${currentIsAdmin ? `
   <div class="admin-product-actions">
