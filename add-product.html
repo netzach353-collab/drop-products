@@ -1,1 +1,359 @@
 
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הוספת מוצר</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.page {
+  max-width: 520px;
+  margin: 30px auto;
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 800;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: #16a34a;
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.back {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.msg {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.preview {
+  display: none;
+  width: 100%;
+  max-height: 230px;
+  object-fit: cover;
+  margin-top: 12px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  font-size:15px;
+  resize:vertical;
+}
+
+.preview-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.preview-item {
+  position: relative;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 95px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.remove-img {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+  font-weight: 900;
+  margin: 0;
+  padding: 0;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+  <h1>הוספת מוצר חדש</h1>
+
+  <form id="productForm">
+    <label>שם מוצר</label>
+    <input id="name" required>
+
+    <label>מחיר מבצע</label>
+    <input id="sale_price" type="number" required>
+
+    <label>מחיר קודם</label>
+    <input id="old_price" type="number">
+
+    <label>תמונת מוצר</label>
+    <input id="image_file" type="file" accept="image/*" multiple>
+    <div id="imagePreviewList" class="preview-list"></div>
+
+<label>מותג</label>
+<input id="brand">
+
+<label>תת כותרת</label>
+<input id="subtitle">
+
+<label>קטגוריה</label>
+<select id="category" required>
+  <option value="">בחר קטגוריה</option>
+  <option value="computers">מחשבים</option>
+  <option value="phones">סלולר</option>
+  <option value="gaming">גיימינג</option>
+  <option value="appliances">מוצרי חשמל</option>
+  <option value="perfumes">בשמים</option>
+  <option value="toys">צעצועים</option>
+  <option value="watches">שעונים</option>
+  <option value="headphones">אוזניות</option>
+  <option value="gadgets">גאדג׳טים</option>
+</select>
+
+    <label>תיאור מוצר</label>
+<textarea id="description" rows="5"></textarea>
+
+    <label>קישור למוצר</label>
+    <input id="product_url" type="url">
+
+    <button id="submitBtn" type="submit">הוסף מוצר</button>
+  </form>
+
+  <div id="msg" class="msg"></div>
+
+  <a href="index.html" class="back">חזרה לאתר</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://whpyiqqnsnxmldliuuqw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_4DiLOWd_n4NUmzik7NGVeg_5CaFcqYT";
+const UPLOAD_URL = "https://product-upload.netzach353.workers.dev";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+async function checkAdmin() {
+  const { data: userData } = await sb.auth.getUser();
+
+  if (!userData.user) {
+    alert("צריך להתחבר קודם");
+    window.location.href = "index.html";
+    return;
+  }
+
+  const { data: isAdmin, error } = await sb.rpc("is_admin");
+
+  if (error || !isAdmin) {
+    alert("אין לך הרשאה להיכנס לדף הזה");
+    window.location.href = "index.html";
+  }
+}
+
+checkAdmin();
+
+
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(UPLOAD_URL, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "שגיאה בהעלאת התמונה");
+  }
+
+  return data.imageUrl;
+}
+
+
+let selectedImages = [];
+
+document.getElementById("image_file").addEventListener("change", function () {
+  const newImages = Array.from(this.files);
+
+  selectedImages = selectedImages.concat(newImages);
+
+  this.value = "";
+
+  renderImagePreviews();
+});
+
+function renderImagePreviews() {
+  const list = document.getElementById("imagePreviewList");
+  list.innerHTML = "";
+
+  selectedImages.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = "preview-item";
+
+    item.innerHTML = `
+      <img src="${URL.createObjectURL(file)}">
+      <button type="button" class="remove-img" onclick="removeSelectedImage(${index})">×</button>
+    `;
+
+    list.appendChild(item);
+  });
+}
+
+function removeSelectedImage(index) {
+  selectedImages.splice(index, 1);
+  renderImagePreviews();
+
+  if (selectedImages.length === 0) {
+    document.getElementById("image_file").value = "";
+  }
+}
+document.getElementById("productForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const msg = document.getElementById("msg");
+  const submitBtn = document.getElementById("submitBtn");
+if (selectedImages.length === 0) {
+  msg.style.color = "red";
+  msg.textContent = "צריך לבחור לפחות תמונה אחת";
+  return;
+}
+
+  try {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "מעלה מוצר...";
+    msg.style.color = "#111827";
+    msg.textContent = "מעלה תמונה...";
+
+const imageUrls = [];
+
+for (const file of selectedImages) {
+  const url = await uploadImage(file);
+  imageUrls.push(url);
+}
+
+const imageUrl = imageUrls[0];
+    msg.textContent = "שומר מוצר...";
+
+const product = {
+  brand: document.getElementById("brand").value.trim(),
+  name: document.getElementById("name").value.trim(),
+  subtitle: document.getElementById("subtitle").value.trim(),
+category: document.getElementById("category").value,
+  description: document.getElementById("description").value.trim(),
+  sale_price: Number(document.getElementById("sale_price").value),
+  old_price: document.getElementById("old_price").value
+    ? Number(document.getElementById("old_price").value)
+    : null,
+
+  image_url: imageUrl,
+  image_urls: imageUrls,
+  product_url: document.getElementById("product_url").value.trim(),
+  is_active: true
+};
+
+    const { error } = await sb
+      .from("products")
+      .insert(product);
+
+    if (error) {
+      throw error;
+    }
+
+    msg.style.color = "green";
+    msg.textContent = "המוצר נוסף בהצלחה";
+
+    e.target.reset();
+   selectedImages = [];
+   document.getElementById("image_file").value = "";
+   document.getElementById("imagePreviewList").innerHTML = "";
+
+  } catch (error) {
+    console.error(error);
+    msg.style.color = "red";
+    msg.textContent = "שגיאה בהוספת המוצר";
+  }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "הוסף מוצר";
+});
+</script>
+
+</body>
+</html>
